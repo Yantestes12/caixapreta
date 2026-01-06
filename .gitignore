@@ -1,0 +1,24 @@
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Cursor / VSCode
+.vscode/
+
+# Generated previews (keep PDFs, ignore previews)
+pdf/_preview_*.png
+pdf/_oral_preview_*.png
+pdf/_aula_preview_*.png
+
+# Optional: large bundles you downloaded for analysis
+app_original.js
+styles_original.css
+manifest_original.json
+login_page.html
+home_page.html
+
