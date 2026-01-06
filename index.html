@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Jogo do Texto</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="app">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn" type="button" aria-label="Menu">
+        <span class="avatar-icon" aria-hidden="true"></span>
+      </button>
+      <div class="topbar-spacer"></div>
+      <button class="icon-btn" type="button" aria-label="Notificações">
+        <span class="bell-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="carousel" aria-label="Banner">
+      <button class="carousel-arrow left" type="button" aria-label="Anterior">‹</button>
+      <div class="carousel-viewport">
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <div class="carousel-image banner-1">
+            </div>
+          </div>
+          <div class="carousel-slide">
+            <div class="carousel-image banner-2"></div>
+          </div>
+          <div class="carousel-slide">
+            <div class="carousel-image banner-3"></div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-arrow right" type="button" aria-label="Próximo">›</button>
+      <div class="carousel-dots" aria-label="Páginas">
+        <button class="dot is-active" type="button" aria-label="1"></button>
+        <button class="dot" type="button" aria-label="2"></button>
+        <button class="dot" type="button" aria-label="3"></button>
+      </div>
+    </section>
+
+    <section class="grid" aria-label="Conteúdos">
+      <article class="tile" role="link" tabindex="0" data-href="scripts-secretos.html" aria-label="Abrir Scripts Secretos">
+        <div class="tile-media media-1"></div>
+        <div class="tile-title">Scripts Secretos</div>
+      </article>
+
+      <article class="tile" role="link" tabindex="0" data-href="aula-secreta.html" aria-label="Abrir Aula Secreta">
+        <div class="tile-media media-2"></div>
+        <div class="tile-title">Aula Secreta</div>
+      </article>
+
+      <article class="tile" role="link" tabindex="0" data-href="https://chatgpt.com/g/g-6856313d35c0819187235d0d83d5af7c-bot-da-conquista" aria-label="Abrir Bot da Conquista">
+        <div class="tile-media media-3"></div>
+        <div class="tile-title">Bot da Conquista</div>
+      </article>
+    </section>
+  </main>
+
+  <button class="fab" type="button" aria-label="Suporte"></button>
+
+  <nav class="bottom-nav" aria-label="Navegação">
+    <button class="nav-item is-active" type="button" aria-label="Início">
+      <span class="nav-ico home" aria-hidden="true"></span>
+      <span class="nav-label">Início</span>
+    </button>
+    <button class="nav-item" type="button" aria-label="Feed">
+      <span class="nav-ico feed" aria-hidden="true"></span>
+      <span class="nav-label">Feed</span>
+    </button>
+    <button class="nav-item" type="button" aria-label="Perfil">
+      <span class="nav-ico profile" aria-hidden="true"></span>
+      <span class="nav-label">Perfil</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>

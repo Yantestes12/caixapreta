@@ -1,0 +1,603 @@
+:root {
+  --bg: #ffffff;
+  --topbar: #0b0b0b;
+  --text: #0b0b0b;
+  --muted: #6b7280;
+  --card: #ffffff;
+  --border: #ececec;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+  --radius: 14px;
+  --gap: 14px;
+  --nav-h: 74px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app { padding-bottom: calc(var(--nav-h) + 18px); }
+
+/* TOPBAR */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--topbar);
+  padding-top: env(safe-area-inset-top);
+}
+.topbar-inner {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+}
+.topbar-spacer { flex: 1; }
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+.avatar-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 35%, #fff 0 22%, transparent 23%),
+              radial-gradient(circle at 50% 85%, #fff 0 34%, transparent 35%);
+  opacity: 0.92;
+}
+.bell-icon {
+  width: 22px;
+  height: 22px;
+  position: relative;
+}
+.bell-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid #fff;
+  border-bottom: 0;
+  border-radius: 12px 12px 6px 6px;
+  transform: translateY(2px);
+  opacity: 0.92;
+}
+.bell-icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #fff;
+  transform: translateX(-50%);
+  opacity: 0.92;
+}
+
+/* MAIN */
+.main {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 14px 14px 0;
+}
+
+/* CAROUSEL */
+.carousel {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+}
+.carousel-viewport { overflow: hidden; }
+.carousel-track {
+  display: flex;
+  width: 100%;
+  transform: translateX(0%);
+  transition: transform 260ms ease;
+}
+.carousel-slide { flex: 0 0 100%; }
+.carousel-image {
+  height: clamp(170px, 42vw, 210px);
+  position: relative;
+  display: grid;
+  place-items: center;
+  background-size: cover;
+  background-position: center;
+}
+.banner-1 {
+  background-image:
+    url("assets/banner-1.jpg"),
+    url("assets/banner-1.png"),
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.12), transparent 45%),
+    linear-gradient(110deg, #111 0 35%, #000 36% 100%);
+}
+.banner-2 {
+  background-image:
+    url("assets/banner-2.jpg"),
+    url("assets/banner-2.png"),
+    linear-gradient(135deg, #111 0%, #000 55%, #2b0a0a 100%);
+}
+.banner-3 {
+  background-image:
+    url("assets/banner-3.jpg"),
+    url("assets/banner-3.png"),
+    linear-gradient(135deg, #000 0%, #140000 55%, #2b0a0a 100%);
+}
+.banner-copy {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+  color: #fff;
+  max-width: 62%;
+}
+.banner-title-top {
+  display: block;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 22px;
+}
+.banner-title-bottom {
+  display: block;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-size: 34px;
+  color: #ff3b3b;
+  text-shadow: 0 10px 30px rgba(255, 59, 59, 0.25);
+}
+.banner-subtitle {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+}
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255,255,255,0.50);
+  color: #111;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  line-height: 1;
+}
+.carousel-arrow.left { left: 10px; }
+.carousel-arrow.right { right: 10px; }
+.carousel-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  z-index: 2;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255,255,255,0.40);
+}
+.dot.is-active { background: rgba(255,255,255,0.90); }
+
+/* GRID TILES */
+.grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+}
+.tile {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+}
+.tile-media {
+  aspect-ratio: 1 / 1;
+  height: auto;
+  background: #111;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* “Color grade” leve pra deixar mais original (sem alterar os arquivos das imagens) */
+.tile-media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255, 0, 0, 0.14), transparent 55%),
+    linear-gradient(to top, rgba(0, 0, 0, 0.25), transparent 55%);
+  pointer-events: none;
+}
+
+/* Remover texto embutido no rodapé das capas que vêm com “Eduardo Alves” */
+.tile-media.media-1,
+.tile-media.media-3 {
+  background-size: 112%;
+  background-position: center 42%;
+}
+.tile-media.media-1::after,
+.tile-media.media-3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26%;
+  background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0));
+  pointer-events: none;
+}
+.tile-title {
+  padding: 10px 12px 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111;
+  line-height: 1.15;
+}
+
+/* Placeholder “art” para ficar parecido até você trocar por imagens reais */
+.media-1 {
+  background-image:
+    url("assets/card-1.png"),
+    url("assets/card-1.jpg"),
+    linear-gradient(135deg, #111 0%, #300 55%, #000 100%);
+}
+.media-2 {
+  background-image:
+    url("assets/card-2.png"),
+    url("assets/card-2.jpg"),
+    linear-gradient(135deg, #000 0%, #1a1a1a 60%, #300 100%);
+}
+.media-3 {
+  background-image:
+    url("assets/card-3.png"),
+    url("assets/card-3.jpg"),
+    linear-gradient(135deg, #250000 0%, #000 55%, #111 100%);
+}
+.media-4 {
+  background-image:
+    url("assets/card-4.png"),
+    url("assets/card-4.jpg"),
+    radial-gradient(circle at 55% 45%, rgba(255,255,255,0.15), transparent 55%),
+    linear-gradient(135deg, #000 0%, #240000 100%);
+}
+.media-5 {
+  background-image:
+    url("assets/card-5.png"),
+    url("assets/card-5.jpg"),
+    linear-gradient(135deg, #5a0b0b 0%, #2b0a0a 70%, #000 100%);
+}
+.media-6 {
+  background-image:
+    url("assets/card-6.png"),
+    url("assets/card-6.jpg"),
+    radial-gradient(circle at 55% 55%, rgba(255,0,0,0.18), transparent 55%),
+    linear-gradient(135deg, #000 0%, #240000 100%);
+}
+.media-7 {
+  background-image:
+    url("assets/card-7.png"),
+    url("assets/card-7.jpg"),
+    linear-gradient(135deg, #111 0%, #2b0a0a 55%, #000 100%);
+}
+.media-8 {
+  background-image:
+    url("assets/card-8.png"),
+    url("assets/card-8.jpg"),
+    linear-gradient(135deg, #000 0%, #2b0a0a 55%, #111 100%);
+}
+.media-9 {
+  background-image:
+    url("assets/card-9.png"),
+    url("assets/card-9.jpg"),
+    linear-gradient(135deg, #111 0%, #000 55%, #2b0a0a 100%);
+}
+
+/* LOCK OVERLAY */
+.tile.is-locked .tile-media { filter: saturate(0.95) contrast(1.05); }
+.lock {
+  position: absolute;
+  left: 50%;
+  top: 78px;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.45);
+  display: grid;
+  place-items: center;
+}
+.lock::before {
+  content: "";
+  width: 18px;
+  height: 14px;
+  border: 3px solid #fff;
+  border-top: 0;
+  border-radius: 3px;
+  position: relative;
+  top: 3px;
+}
+.lock::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 12px;
+  border: 3px solid #fff;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  transform: translateY(-10px);
+}
+
+/* FAB */
+.fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--nav-h) + 18px);
+  z-index: 60;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 0;
+  background: radial-gradient(circle at 35% 30%, #ff5a5a 0 35%, #d10000 36% 100%);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+.fab::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.35);
+}
+.fab::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 12px;
+  border: 2px solid rgba(255,255,255,0.9);
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  transform: translate(-50%, -30%);
+  box-shadow:
+    -10px -2px 0 -8px rgba(255,255,255,0.9),
+    10px -2px 0 -8px rgba(255,255,255,0.9);
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 55;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: #fff;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.nav-item {
+  border: 0;
+  background: transparent;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 6px;
+  padding: 10px 0 8px;
+  color: #6b7280;
+}
+.nav-item.is-active { color: #111; }
+.nav-label { font-size: 14px; }
+.nav-ico {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  position: relative;
+}
+.nav-ico.home::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  transform: translateX(-50%) rotate(45deg);
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  border-right: 0;
+}
+.nav-ico.home::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 14px;
+  height: 10px;
+  transform: translateX(-50%);
+  border: 2px solid currentColor;
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+}
+.nav-ico.feed::before {
+  content: "";
+  position: absolute;
+  inset: 6px 5px auto 5px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 6px 0 currentColor, 0 12px 0 currentColor;
+}
+.nav-ico.profile::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.nav-ico.profile::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 18px;
+  height: 10px;
+  border-radius: 10px 10px 6px 6px;
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  transform: translateX(-50%);
+}
+
+/* SUBPAGE (Scripts Secretos) */
+.subpage .main { padding-top: 10px; }
+.subpage-header {
+  background: #fff;
+  padding: 8px 0 12px;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 500;
+}
+.back-ico {
+  font-size: 28px;
+  line-height: 1;
+  color: #9ca3af;
+}
+
+.parts-grid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+.parts-grid.parts-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.part {
+  text-decoration: none;
+  color: inherit;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+.part-cover {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 22px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.16);
+  overflow: hidden;
+  position: relative;
+}
+
+/* A mesma “limpeza” para a capa usada no grid de Scripts Secretos */
+.cover-jogo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26%;
+  background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0));
+  pointer-events: none;
+}
+.part-title {
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #111;
+  line-height: 1.15;
+}
+
+/* Covers */
+.cover-jogo {
+  background-image:
+    url("assets/card-1.png"),
+    url("assets/card-1.jpg");
+}
+.cover-1000 {
+  background-image:
+    url("assets/1000-scripts.png"),
+    linear-gradient(135deg, #111 0%, #2b0a0a 60%, #000 100%);
+}
+
+/* Capas “bonitas/avançadas” via SVG (sem precisar de imagem externa) */
+.cover-1000-1 {
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201000%201000'%3E%3Cdefs%3E%3CradialGradient%20id='g'%20cx='50%25'%20cy='45%25'%20r='70%25'%3E%3Cstop%20offset='0%25'%20stop-color='%23ff3b3b'%20stop-opacity='.35'/%3E%3Cstop%20offset='55%25'%20stop-color='%23000000'%20stop-opacity='0'/%3E%3Cstop%20offset='100%25'%20stop-color='%23000000'%20stop-opacity='1'/%3E%3C/radialGradient%3E%3Cfilter%20id='blur'%3E%3CfeGaussianBlur%20stdDeviation='22'/%3E%3C/filter%3E%3C/defs%3E%3Crect%20width='1000'%20height='1000'%20fill='%23000000'/%3E%3Ccircle%20cx='520'%20cy='520'%20r='420'%20fill='url(%23g)'/%3E%3Cpath%20d='M140%20630%20C260%20520%20320%20520%20440%20610%20C560%20700%20640%20710%20790%20630%20C700%20770%20580%20810%20430%20790%20C280%20770%20200%20710%20140%20630Z'%20fill='%23ff0000'%20opacity='.28'%20filter='url(%23blur)'/%3E%3Ctext%20x='90'%20y='340'%20fill='white'%20font-size='190'%20font-family='Arial'%20font-weight='800'%20style='letter-spacing:-6px'%3E1000%3C/text%3E%3Ctext%20x='95'%20y='520'%20fill='white'%20font-size='120'%20font-family='Arial'%20font-weight='800'%3ESCRIPTS%3C/text%3E%3Ctext%20x='95'%20y='650'%20fill='white'%20font-size='120'%20font-family='Arial'%20font-weight='800'%3EMENTAIS%3C/text%3E%3Crect%20x='70'%20y='720'%20rx='28'%20ry='28'%20width='360'%20height='110'%20fill='%23d10000'/%3E%3Ctext%20x='120'%20y='800'%20fill='white'%20font-size='64'%20font-family='Arial'%20font-weight='800'%3EPARTE%201%3C/text%3E%3C/svg%3E"),
+    linear-gradient(135deg, #111 0%, #2b0a0a 60%, #000 100%);
+}
+.cover-1000-2 {
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201000%201000'%3E%3Cdefs%3E%3CradialGradient%20id='g'%20cx='50%25'%20cy='45%25'%20r='70%25'%3E%3Cstop%20offset='0%25'%20stop-color='%23ff3b3b'%20stop-opacity='.35'/%3E%3Cstop%20offset='55%25'%20stop-color='%23000000'%20stop-opacity='0'/%3E%3Cstop%20offset='100%25'%20stop-color='%23000000'%20stop-opacity='1'/%3E%3C/radialGradient%3E%3Cfilter%20id='blur'%3E%3CfeGaussianBlur%20stdDeviation='22'/%3E%3C/filter%3E%3C/defs%3E%3Crect%20width='1000'%20height='1000'%20fill='%23000000'/%3E%3Ccircle%20cx='520'%20cy='520'%20r='420'%20fill='url(%23g)'/%3E%3Cpath%20d='M130%20590%20C260%20510%20340%20510%20470%20600%20C600%20690%20670%20690%20810%20600%20C720%20760%20590%20810%20430%20790%20C270%20770%20190%20700%20130%20590Z'%20fill='%23ff0000'%20opacity='.28'%20filter='url(%23blur)'/%3E%3Ctext%20x='90'%20y='340'%20fill='white'%20font-size='190'%20font-family='Arial'%20font-weight='800'%20style='letter-spacing:-6px'%3E1000%3C/text%3E%3Ctext%20x='95'%20y='520'%20fill='white'%20font-size='120'%20font-family='Arial'%20font-weight='800'%3ESCRIPTS%3C/text%3E%3Ctext%20x='95'%20y='650'%20fill='white'%20font-size='120'%20font-family='Arial'%20font-weight='800'%3EMENTAIS%3C/text%3E%3Crect%20x='70'%20y='720'%20rx='28'%20ry='28'%20width='360'%20height='110'%20fill='%23d10000'/%3E%3Ctext%20x='120'%20y='800'%20fill='white'%20font-size='64'%20font-family='Arial'%20font-weight='800'%3EPARTE%202%3C/text%3E%3C/svg%3E"),
+    linear-gradient(135deg, #111 0%, #2b0a0a 60%, #000 100%);
+}
+.cover-1000-3 {
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201000%201000'%3E%3Cdefs%3E%3CradialGradient%20id='g'%20cx='50%25'%20cy='45%25'%20r='70%25'%3E%3Cstop%20offset='0%25'%20stop-color='%23ff3b3b'%20stop-opacity='.35'/%3E%3Cstop%20offset='55%25'%20stop-color='%23000000'%20stop-opacity='0'/%3E%3Cstop%20offset='100%25'%20stop-color='%23000000'%20stop-opacity='1'/%3E%3C/radialGradient%3E%3Cfilter%20id='blur'%3E%3CfeGaussianBlur%20stdDeviation='22'/%3E%3C/filter%3E%3C/defs%3E%3Crect%20width='1000'%20height='1000'%20fill='%23000000'/%3E%3Ccircle%20cx='520'%20cy='520'%20r='420'%20fill='url(%23g)'/%3E%3Cpath%20d='M150%20620%20C270%20510%20340%20510%20460%20600%20C580%20690%20660%20710%20820%20630%20C720%20770%20590%20810%20430%20790%20C270%20770%20200%20710%20150%20620Z'%20fill='%23ff0000'%20opacity='.28'%20filter='url(%23blur)'/%3E%3Ctext%20x='90'%20y='340'%20fill='white'%20font-size='190'%20font-family='Arial'%20font-weight='800'%20style='letter-spacing:-6px'%3E1000%3C/text%3E%3Ctext%20x='95'%20y='520'%20fill='white'%20font-size='120'%20font-family='Arial'%20font-weight='800'%3ESCRIPTS%3C/text%3E%3Ctext%20x='95'%20y='650'%20fill='white'%20font-size='120'%20font-family='Arial'%20font-weight='800'%3EMENTAIS%3C/text%3E%3Crect%20x='70'%20y='720'%20rx='28'%20ry='28'%20width='360'%20height='110'%20fill='%23d10000'/%3E%3Ctext%20x='120'%20y='800'%20fill='white'%20font-size='64'%20font-family='Arial'%20font-weight='800'%3EPARTE%203%3C/text%3E%3C/svg%3E"),
+    linear-gradient(135deg, #111 0%, #2b0a0a 60%, #000 100%);
+}
+
+/* Aula Secreta - Capas bonitas */
+.cover-guide-pdf {
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201000%201000'%3E%3Cdefs%3E%3CradialGradient%20id='r'%20cx='50%25'%20cy='38%25'%20r='70%25'%3E%3Cstop%20offset='0%25'%20stop-color='%23ff3b3b'%20stop-opacity='.30'/%3E%3Cstop%20offset='55%25'%20stop-color='%23000000'%20stop-opacity='0'/%3E%3Cstop%20offset='100%25'%20stop-color='%23000000'%20stop-opacity='1'/%3E%3C/radialGradient%3E%3Cfilter%20id='b'%3E%3CfeGaussianBlur%20stdDeviation='18'/%3E%3C/filter%3E%3C/defs%3E%3Crect%20width='1000'%20height='1000'%20fill='%23000000'/%3E%3Ccircle%20cx='520'%20cy='520'%20r='420'%20fill='url(%23r)'/%3E%3Cpath%20d='M250%20220%20h360%20a40%2040%200%200%201%2040%2040%20v520%20a40%2040%200%200%201%20-40%2040%20h-360%20a40%2040%200%200%201%20-40%20-40%20v-520%20a40%2040%200%200%201%2040%20-40z'%20fill='%23ffffff'%20opacity='.12'/%3E%3Cpath%20d='M310%20280%20h240%20v70%20H310z%20M310%20390%20h380%20v40%20H310z%20M310%20460%20h360%20v40%20H310z%20M310%20530%20h330%20v40%20H310z'%20fill='%23ffffff'%20opacity='.55'/%3E%3Cpath%20d='M250%20730%20h500%20a22%2022%200%200%201%2022%2022%20v80%20a22%2022%200%200%201%20-22%2022%20h-500%20a22%2022%200%200%201%20-22%20-22%20v-80%20a22%2022%200%200%201%2022%20-22z'%20fill='%23d10000'/%3E%3Ctext%20x='500'%20y='790'%20fill='white'%20font-size='64'%20font-family='Arial'%20font-weight='800'%20text-anchor='middle'%3EGUIA%20EM%20PDF%3C/text%3E%3Cpath%20d='M190%20610%20C310%20500%20370%20500%20490%20590%20C610%20680%20690%20690%20840%20610%20C740%20760%20610%20820%20470%20800%20C320%20780%20250%20700%20190%20610Z'%20fill='%23ff0000'%20opacity='.22'%20filter='url(%23b)'/%3E%3C/svg%3E"),
+    linear-gradient(135deg, #111 0%, #2b0a0a 60%, #000 100%);
+}
+.cover-guide-video {
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201000%201000'%3E%3Cdefs%3E%3CradialGradient%20id='r'%20cx='50%25'%20cy='38%25'%20r='70%25'%3E%3Cstop%20offset='0%25'%20stop-color='%23ff3b3b'%20stop-opacity='.30'/%3E%3Cstop%20offset='55%25'%20stop-color='%23000000'%20stop-opacity='0'/%3E%3Cstop%20offset='100%25'%20stop-color='%23000000'%20stop-opacity='1'/%3E%3C/radialGradient%3E%3Cfilter%20id='b'%3E%3CfeGaussianBlur%20stdDeviation='18'/%3E%3C/filter%3E%3C/defs%3E%3Crect%20width='1000'%20height='1000'%20fill='%23000000'/%3E%3Ccircle%20cx='520'%20cy='520'%20r='420'%20fill='url(%23r)'/%3E%3Crect%20x='210'%20y='260'%20width='580'%20height='420'%20rx='60'%20fill='%23ffffff'%20opacity='.12'/%3E%3Crect%20x='260'%20y='310'%20width='480'%20height='320'%20rx='40'%20fill='%23000000'%20opacity='.55'/%3E%3Cpath%20d='M470%20395%20L640%20470%20L470%20545%20Z'%20fill='%23ff3b3b'%20opacity='.95'/%3E%3Cpath%20d='M250%20730%20h500%20a22%2022%200%200%201%2022%2022%20v80%20a22%2022%200%200%201%20-22%2022%20h-500%20a22%2022%200%200%201%20-22%20-22%20v-80%20a22%2022%200%200%201%2022%20-22z'%20fill='%23d10000'/%3E%3Ctext%20x='500'%20y='790'%20fill='white'%20font-size='64'%20font-family='Arial'%20font-weight='800'%20text-anchor='middle'%3EGUIA%20EM%20V%C3%8DDEO%3C/text%3E%3Cpath%20d='M190%20610%20C310%20500%20370%20500%20490%20590%20C610%20680%20690%20690%20840%20610%20C740%20760%20610%20820%20470%20800%20C320%20780%20250%20700%20190%20610Z'%20fill='%23ff0000'%20opacity='.22'%20filter='url(%23b)'/%3E%3C/svg%3E"),
+    linear-gradient(135deg, #111 0%, #2b0a0a 60%, #000 100%);
+}
+
+@media (max-width: 430px) {
+  .parts-grid { grid-template-columns: repeat(3, 1fr); }
+  .part-title { font-size: 18px; }
+}
+@media (max-width: 360px) {
+  .part-title { font-size: 16px; }
+  .part-cover { border-radius: 18px; }
+}
+
+/* Small phones */
+@media (max-width: 360px) {
+  .tile-title { font-size: 16px; }
+  .carousel-image { height: 175px; }
+}
