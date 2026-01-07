@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#07060a">
+  <meta name="color-scheme" content="dark">
   <title>Jogo do Texto</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -26,10 +28,27 @@
         <div class="carousel-track" id="carouselTrack">
           <div class="carousel-slide">
             <div class="carousel-image banner-1">
+              <div class="banner-copy">
+                <span class="banner-eyebrow">CAIXA PRETA</span>
+                <span class="banner-title">Jogo do Texto</span>
+                <span class="banner-subtitle">Scripts prontos pra abrir conversa, criar atração e manter o controle.</span>
+                <button class="banner-cta" type="button" data-href="scripts-secretos.html" aria-label="Abrir Scripts Secretos">
+                  Abrir Scripts Secretos
+                </button>
+              </div>
             </div>
           </div>
           <div class="carousel-slide">
-            <div class="carousel-image banner-2"></div>
+            <div class="carousel-image banner-2">
+              <div class="banner-copy">
+                <span class="banner-eyebrow">AULA</span>
+                <span class="banner-title">Secreta</span>
+                <span class="banner-subtitle">Estratégia e estrutura pra você conduzir qualquer conversa com confiança.</span>
+                <button class="banner-cta" type="button" data-href="aula-secreta.html" aria-label="Abrir Aula Secreta">
+                  Assistir agora
+                </button>
+              </div>
+            </div>
           </div>
           <div class="carousel-slide">
             <div class="carousel-image banner-3">
@@ -60,18 +79,27 @@
         <div class="tile-title">Aula Secreta</div>
       </article>
 
-      <article class="tile" role="link" tabindex="0" data-href="https://chatgpt.com/g/g-6856313d35c0819187235d0d83d5af7c-bot-da-conquista" aria-label="Abrir Bot da Conquista">
-        <div class="tile-media media-3"></div>
+      <article class="tile is-locked tile-bot" role="link" tabindex="0" data-href="https://pagamento.caixapretabr.com/compra/checkout-2/" data-target="_self" aria-label="Desbloquear Bot da Conquista por R$ 9,90">
+        <div class="tile-media media-3">
+          <span class="lock" aria-hidden="true"></span>
+        </div>
         <div class="tile-title">Bot da Conquista</div>
+        <div class="tile-subtitle">Bloqueado • R$ 9,90</div>
       </article>
     </section>
   </main>
 
   <nav class="bottom-nav" aria-label="Navegação">
-    <button class="nav-item is-active" type="button" aria-label="Início">
+    <a class="nav-item is-active" href="index.html" aria-label="Início">
       <span class="nav-ico home" aria-hidden="true"></span>
       <span class="nav-label">Início</span>
-    </button>
+    </a>
+
+    <a class="nav-item bot is-locked" href="https://pagamento.caixapretabr.com/compra/checkout-2/" aria-label="Desbloquear Bot da Conquista por R$ 9,90">
+      <span class="nav-ico bot" aria-hidden="true"></span>
+      <span class="nav-label">Bot da Conquista</span>
+      <span class="nav-sublabel">R$ 9,90</span>
+    </a>
   </nav>
 
   <script src="app.js"></script>

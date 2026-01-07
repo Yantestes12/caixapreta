@@ -47,7 +47,12 @@
   const go = (el) => {
     const href = el?.getAttribute?.("data-href");
     if (!href) return;
+    const target = el?.getAttribute?.("data-target");
     if (/^https?:\/\//i.test(href)) {
+      if (target === "_self") {
+        window.location.href = href;
+        return;
+      }
       window.open(href, "_blank", "noopener,noreferrer");
       return;
     }
