@@ -32,7 +32,7 @@
                 <span class="banner-eyebrow">CAIXA PRETA</span>
                 <span class="banner-title">Jogo do Texto</span>
                 <span class="banner-subtitle">Scripts prontos pra abrir conversa, criar atração e manter o controle.</span>
-                <button class="banner-cta" type="button" data-href="scripts-secretos.html" aria-label="Abrir Scripts Secretos">
+                <button class="banner-cta" type="button" data-href="scripts-secretos.html" data-requires="caixapreta" aria-label="Abrir Scripts Secretos">
                   Abrir Scripts Secretos
                 </button>
               </div>
@@ -44,7 +44,7 @@
                 <span class="banner-eyebrow">AULA</span>
                 <span class="banner-title">Secreta</span>
                 <span class="banner-subtitle">Estratégia e estrutura pra você conduzir qualquer conversa com confiança.</span>
-                <button class="banner-cta" type="button" data-href="aula-secreta.html" aria-label="Abrir Aula Secreta">
+                <button class="banner-cta" type="button" data-href="aula-secreta.html" data-requires="caixapreta" aria-label="Abrir Aula Secreta">
                   Assistir agora
                 </button>
               </div>
@@ -69,17 +69,17 @@
     </section>
 
     <section class="grid" aria-label="Conteúdos">
-      <article class="tile" role="link" tabindex="0" data-href="scripts-secretos.html" aria-label="Abrir Scripts Secretos">
+      <article class="tile" role="link" tabindex="0" data-href="scripts-secretos.html" data-requires="caixapreta" aria-label="Abrir Scripts Secretos">
         <div class="tile-media media-1"></div>
         <div class="tile-title">Scripts Secretos</div>
       </article>
 
-      <article class="tile" role="link" tabindex="0" data-href="aula-secreta.html" aria-label="Abrir Aula Secreta">
+      <article class="tile" role="link" tabindex="0" data-href="aula-secreta.html" data-requires="caixapreta" aria-label="Abrir Aula Secreta">
         <div class="tile-media media-2"></div>
         <div class="tile-title">Aula Secreta</div>
       </article>
 
-      <article class="tile is-locked tile-bot" role="link" tabindex="0" data-href="https://pagamento.caixapretabr.com/compra/checkout-2/" data-target="_self" aria-label="Desbloquear Bot da Conquista por R$ 9,90">
+      <article class="tile is-locked tile-bot" role="link" tabindex="0" data-href="https://pagamento.caixapretabr.com/compra/checkout-2/" data-target="_self" data-requires="bot" aria-label="Desbloquear Bot da Conquista por R$ 9,90">
         <div class="tile-media media-3">
           <span class="lock" aria-hidden="true"></span>
         </div>
@@ -95,6 +95,27 @@
       <span class="nav-label">Início</span>
     </a>
   </nav>
+
+  <div class="auth-overlay" id="authOverlay" hidden>
+    <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <div class="auth-kicker">CAIXA PRETA</div>
+      <div class="auth-title" id="authTitle">Entrar com e-mail</div>
+      <div class="auth-subtitle">Digite seu e-mail para verificar se você está liberado.</div>
+
+      <form class="auth-form" id="authForm">
+        <label class="auth-label" for="authEmail">E-mail</label>
+        <input class="auth-input" id="authEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="seuemail@exemplo.com" required>
+
+        <button class="auth-btn" id="authSubmit" type="submit">Verificar acesso</button>
+        <div class="auth-status" id="authStatus" role="status" aria-live="polite"></div>
+      </form>
+
+      <div class="auth-actions">
+        <button class="auth-link" id="authLogout" type="button">Trocar e-mail</button>
+        <button class="auth-link" id="authClose" type="button">Fechar</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
