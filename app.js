@@ -145,6 +145,29 @@
     }
   };
 
+  let refreshPromise = null;
+  const refreshEntitlements = async (email, { silent = true } = {}) => {
+    const usedEmail = String(email ?? "").trim();
+    if (!usedEmail) return null;
+    if (refreshPromise) return refreshPromise;
+
+    refreshPromise = (async () => {
+      if (!silent) setStatus(statusEl, "Verificando acesso...", undefined);
+      const res = await callWebhook(usedEmail);
+      localStorage.setItem(STORAGE_KEYS.email, usedEmail);
+      localStorage.setItem(STORAGE_KEYS.caixapreta, res?.caixapreta ?? "null");
+      localStorage.setItem(STORAGE_KEYS.bot, res?.bot ?? "null");
+      localStorage.setItem(STORAGE_KEYS.checkedAt, String(Date.now()));
+      return res;
+    })();
+
+    try {
+      return await refreshPromise;
+    } finally {
+      refreshPromise = null;
+    }
+  };
+
   const applyBotTile = () => {
     const botTile = document.querySelector(".tile-bot");
     if (!botTile) return;
@@ -200,12 +223,25 @@
     Object.values(STORAGE_KEYS).forEach((k) => localStorage.removeItem(k));
   };
 
-  const enforcePageGate = () => {
+  const enforcePageGate = async () => {
     const needs = document.body?.getAttribute?.("data-requires");
     const ent = getEntitlements();
 
     // Páginas protegidas (subpáginas): bloqueia até liberar caixapreta
     if (needs === "caixapreta") {
+      if (!hasCaixaPreta()) {
+        // Se já tem e-mail salvo, revalida sempre ao entrar (caso tenha comprado depois)
+        if (ent.email) {
+          showLogin("Verificando acesso...");
+          if (closeBtn) closeBtn.style.display = "none";
+          try {
+            await refreshEntitlements(ent.email, { silent: false });
+          } catch (_) {
+            // mantém estado atual
+          }
+          applyBotTile();
+        }
+      }
       if (!hasCaixaPreta()) {
         showLogin("Digite seu e-mail para liberar o acesso.");
         if (closeBtn) closeBtn.style.display = "none";
@@ -227,11 +263,24 @@
     hideLogin();
   };
 
-  const go = (el) => {
+  const go = async (el) => {
     const requires = el?.getAttribute?.("data-requires");
     if (requires === "caixapreta" && !hasCaixaPreta()) {
       showLogin("Acesso bloqueado. Digite seu e-mail para verificar.");
       return;
+    }
+
+    // Bot: sempre revalida ao tentar abrir, se já tiver e-mail salvo
+    if (requires === "bot") {
+      const ent = getEntitlements();
+      if (ent.email) {
+        try {
+          await refreshEntitlements(ent.email, { silent: true });
+        } catch (_) {
+          // se falhar, segue com o último estado salvo
+        }
+        applyBotTile();
+      }
     }
 
     const href = el?.getAttribute?.("data-href");
@@ -293,11 +342,7 @@
       setStatus(statusEl, "Verificando acesso...", undefined);
 
       try {
-        const res = await callWebhook(email);
-        localStorage.setItem(STORAGE_KEYS.email, email);
-        localStorage.setItem(STORAGE_KEYS.caixapreta, res?.caixapreta ?? "null");
-        localStorage.setItem(STORAGE_KEYS.bot, res?.bot ?? "null");
-        localStorage.setItem(STORAGE_KEYS.checkedAt, String(Date.now()));
+        const res = await refreshEntitlements(email, { silent: true });
 
         applyBotTile();
 
@@ -331,6 +376,18 @@
 
   // init
   applyBotTile();
-  setTimeout(enforcePageGate, 150);
+  (async () => {
+    // Sempre revalida ao entrar (se já tiver e-mail salvo) para pegar upgrades (ex.: comprou Bot depois)
+    const ent = getEntitlements();
+    if (ent.email) {
+      try {
+        await refreshEntitlements(ent.email, { silent: true });
+      } catch (_) {
+        // offline/erro: mantém o último estado salvo
+      }
+      applyBotTile();
+    }
+    await enforcePageGate();
+  })();
 })();
 
