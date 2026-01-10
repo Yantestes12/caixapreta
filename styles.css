@@ -275,6 +275,10 @@ a { color: inherit; }
   background-size: cover;
   background-position: center;
 }
+.carousel-image[role="link"] {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 .carousel-image::before {
   content: "";
   position: absolute;
@@ -342,6 +346,13 @@ a { color: inherit; }
   color: #fff;
   max-width: 520px;
   z-index: 1;
+}
+
+/* Capa "Mapa do Toque" (art em SVG, sem depender de arquivo externo) */
+.media-mapa {
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201000%201000'%3E%3Cdefs%3E%3CradialGradient%20id='r'%20cx='52%25'%20cy='46%25'%20r='70%25'%3E%3Cstop%20offset='0%25'%20stop-color='%23ff2d55'%20stop-opacity='.36'/%3E%3Cstop%20offset='55%25'%20stop-color='%23000000'%20stop-opacity='0'/%3E%3Cstop%20offset='100%25'%20stop-color='%23000000'%20stop-opacity='1'/%3E%3C/radialGradient%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0%25'%20stop-color='%23ff2d55'%20stop-opacity='.75'/%3E%3Cstop%20offset='55%25'%20stop-color='%23d10000'%20stop-opacity='.35'/%3E%3Cstop%20offset='100%25'%20stop-color='%23000000'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3Cfilter%20id='b'%3E%3CfeGaussianBlur%20stdDeviation='18'/%3E%3C/filter%3E%3C/defs%3E%3Crect%20width='1000'%20height='1000'%20fill='%23000000'/%3E%3Ccircle%20cx='520'%20cy='520'%20r='430'%20fill='url(%23r)'/%3E%3Cpath%20d='M120%20630%20C220%20500%20340%20480%20460%20580%20C590%20685%20680%20685%20840%20600%20C740%20770%20600%20830%20450%20810%20C280%20790%20190%20720%20120%20630Z'%20fill='%23ff2d55'%20opacity='.28'%20filter='url(%23b)'/%3E%3Cpath%20d='M140%20410%20C240%20300%20360%20290%20490%20390%20C640%20505%20710%20500%20860%20410'%20fill='none'%20stroke='url(%23g)'%20stroke-width='26'%20stroke-linecap='round'%20opacity='.85'/%3E%3Cpath%20d='M170%20465%20C270%20365%20380%20355%20510%20450%20C650%20560%20720%20555%20830%20485'%20fill='none'%20stroke='%23ffffff'%20stroke-width='10'%20stroke-linecap='round'%20opacity='.20'/%3E%3Cpath%20d='M230%20250%20C320%20170%20420%20170%20520%20245%20C620%20320%20710%20315%20810%20240'%20fill='none'%20stroke='%23ff2d55'%20stroke-width='18'%20stroke-linecap='round'%20opacity='.45'/%3E%3C/svg%3E"),
+    linear-gradient(135deg, #111 0%, #2b0a0a 60%, #000 100%);
 }
 .banner-eyebrow {
   display: inline-flex;
