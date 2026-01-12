@@ -58,7 +58,9 @@
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    window.__cpDeferredPrompt = deferredPrompt;
     if (installBtn) installBtn.hidden = false;
+    window.dispatchEvent(new CustomEvent("cp:install-available"));
   });
 
   installBtn?.addEventListener("click", async () => {
@@ -68,11 +70,13 @@
       await deferredPrompt.userChoice;
     } catch (_) {}
     deferredPrompt = null;
+    window.__cpDeferredPrompt = null;
     if (installBtn) installBtn.hidden = true;
   });
 
   window.addEventListener("appinstalled", () => {
     deferredPrompt = null;
+    window.__cpDeferredPrompt = null;
     if (installBtn) installBtn.hidden = true;
   });
 })();
@@ -244,6 +248,113 @@
   const upsellFooter = document.getElementById("upsellFooter");
   const upsellCta = document.getElementById("upsellCta");
   const upsellClose = document.getElementById("upsellClose");
+
+  const installBanner = document.getElementById("installBanner");
+  const installBannerBtn = document.getElementById("installBannerBtn");
+  const installBannerSub = document.getElementById("installBannerSub");
+
+  const notifyTopBtn = document.getElementById("notifyTopBtn");
+  const notifyBtn = document.getElementById("notifyBtn");
+
+  const isStandalone = () =>
+    window.matchMedia?.("(display-mode: standalone)")?.matches ||
+    window.navigator?.standalone === true;
+
+  const showInstallBanner = (subtitle) => {
+    if (!installBanner || !installBannerBtn) return;
+    if (isStandalone()) return;
+    if (!window.__cpDeferredPrompt) {
+      // iOS / browsers sem prompt: ainda assim dá pra orientar
+      installBanner.hidden = false;
+      if (installBannerSub) {
+        installBannerSub.textContent =
+          subtitle ||
+          "No iPhone: Compartilhar → Adicionar à Tela de Início.";
+      }
+      installBannerBtn.disabled = true;
+      installBannerBtn.textContent = "Instalação via navegador";
+      return;
+    }
+    installBanner.hidden = false;
+    installBannerBtn.disabled = false;
+    installBannerBtn.textContent = "Clique aqui para instalar o aplicativo";
+    if (installBannerSub) {
+      installBannerSub.textContent =
+        subtitle || "Instale e acesse direto como app no seu celular.";
+    }
+  };
+
+  const hideInstallBanner = () => {
+    if (!installBanner) return;
+    installBanner.hidden = true;
+  };
+
+  const promptInstall = async () => {
+    const dp = window.__cpDeferredPrompt;
+    if (!dp) return;
+    dp.prompt();
+    try {
+      await dp.userChoice;
+    } catch (_) {}
+    window.__cpDeferredPrompt = null;
+    hideInstallBanner();
+  };
+
+  const toast = (() => {
+    let el = document.getElementById("toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "toast";
+      el.style.position = "fixed";
+      el.style.left = "12px";
+      el.style.right = "12px";
+      el.style.bottom = "calc(var(--nav-h) + env(safe-area-inset-bottom) + 90px)";
+      el.style.zIndex = "130";
+      el.style.padding = "10px 12px";
+      el.style.borderRadius = "14px";
+      el.style.border = "1px solid rgba(255,255,255,0.12)";
+      el.style.background = "rgba(0,0,0,0.65)";
+      el.style.backdropFilter = "blur(10px)";
+      el.style.color = "rgba(255,255,255,0.88)";
+      el.style.fontWeight = "700";
+      el.style.fontSize = "12px";
+      el.style.display = "none";
+      document.body.appendChild(el);
+    }
+    let t = null;
+    return (msg) => {
+      if (!el) return;
+      el.textContent = msg;
+      el.style.display = "block";
+      clearTimeout(t);
+      t = setTimeout(() => (el.style.display = "none"), 2400);
+    };
+  })();
+
+  const requestNotifications = async () => {
+    if (!("Notification" in window)) {
+      toast("Notificações não suportadas neste navegador.");
+      return;
+    }
+    try {
+      const p = await Notification.requestPermission();
+      if (p === "granted") toast("Notificações ativadas.");
+      else if (p === "denied") toast("Notificações bloqueadas pelo navegador.");
+      else toast("Permissão de notificação não concedida.");
+    } catch (_) {
+      toast("Não foi possível pedir a permissão agora.");
+    }
+  };
+
+  notifyTopBtn?.addEventListener("click", requestNotifications);
+  notifyBtn?.addEventListener("click", requestNotifications);
+
+  window.addEventListener("cp:install-available", () => {
+    // Só mostra se já tiver acesso (caixapreta liberado)
+    if (hasCaixaPreta()) showInstallBanner();
+  });
+
+  installBannerBtn?.addEventListener("click", promptInstall);
 
   const preloadUpsellVideo = () => {
     if (!upsellVideo) return Promise.resolve();
@@ -467,6 +578,8 @@
         if (res?.caixapreta === "sim") {
           setStatus(statusEl, "Acesso liberado. Bem-vindo!", "ok");
           setTimeout(() => hideLogin(), 450);
+          // Depois do login, sugere instalação (se botar como app)
+          setTimeout(() => showInstallBanner(), 650);
           return;
         }
 
@@ -508,6 +621,8 @@
     await enforcePageGate();
     // Mostra o upsell sempre que entrar (se bot não liberado). Se login estiver aberto, ele não aparece.
     showUpsell();
+    // Se já estiver liberado e o prompt existir, mostra banner de instalar
+    if (hasCaixaPreta()) showInstallBanner();
   })();
 })();
 

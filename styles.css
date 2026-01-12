@@ -363,10 +363,76 @@ a { color: inherit; }
   height: 28px;
   border-radius: 10px;
   background:
-    url("assets/icon-192.png") center / contain no-repeat,
+    url("assets/logo/logo.png") center / contain no-repeat,
+    url("assets/logo/icon-192.png") center / contain no-repeat,
     url("assets/logo-mask.svg") center / contain no-repeat;
   filter: drop-shadow(0 8px 18px rgba(0,0,0,0.45));
   opacity: 0.95;
+}
+
+.bottom-nav {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.nav-ico.bell::before,
+.nav-ico.bell::after {
+  content: "";
+  position: absolute;
+}
+.nav-ico.bell::before {
+  left: 50%;
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  transform: translateX(-50%);
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  border-radius: 12px 12px 6px 6px;
+}
+.nav-ico.bell::after {
+  left: 50%;
+  bottom: 4px;
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.install-banner[hidden] { display: none; }
+.install-banner {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 10px);
+  z-index: 120;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background:
+    radial-gradient(420px 160px at 20% 0%, rgba(255, 45, 85, 0.18), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  box-shadow: var(--shadow-soft);
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+.install-banner-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  color: rgba(255,255,255,0.96);
+  cursor: pointer;
+  background:
+    radial-gradient(240px 140px at 20% 10%, rgba(255, 255, 255, 0.18), transparent 60%),
+    linear-gradient(135deg, rgba(255, 45, 85, 0.98), rgba(129, 19, 44, 0.98));
+}
+.install-banner-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.72);
+  padding: 0 6px 2px;
 }
 
 .install-ico {
