@@ -42,6 +42,41 @@
   );
 })();
 
+// PWA install + service worker
+(() => {
+  // Service worker (para instalar/offline)
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+
+  // Botão "Instalar" (Chrome/Android)
+  const installBtn = document.getElementById("installBtn");
+  let deferredPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.hidden = false;
+  });
+
+  installBtn?.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    try {
+      await deferredPrompt.userChoice;
+    } catch (_) {}
+    deferredPrompt = null;
+    if (installBtn) installBtn.hidden = true;
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    if (installBtn) installBtn.hidden = true;
+  });
+})();
+
 // Navegação + Login por e-mail (via webhook n8n)
 (() => {
   const STORAGE_KEYS = {
@@ -202,6 +237,57 @@
   const logoutBtn = document.getElementById("authLogout");
   const closeBtn = document.getElementById("authClose");
 
+  const upsellOverlay = document.getElementById("upsellOverlay");
+  const upsellVideo = document.getElementById("upsellVideo");
+  const upsellPoll = document.getElementById("upsellPoll");
+  const upsellNote = document.getElementById("upsellNote");
+  const upsellFooter = document.getElementById("upsellFooter");
+  const upsellCta = document.getElementById("upsellCta");
+  const upsellClose = document.getElementById("upsellClose");
+
+  const preloadUpsellVideo = () => {
+    if (!upsellVideo) return Promise.resolve();
+    // Espera o mínimo pro primeiro frame ficar disponível
+    if (upsellVideo.readyState >= 2) return Promise.resolve();
+    return new Promise((resolve) => {
+      const done = () => resolve();
+      upsellVideo.addEventListener("loadeddata", done, { once: true });
+      upsellVideo.addEventListener("error", done, { once: true });
+      // garante que começa a carregar
+      try {
+        upsellVideo.load?.();
+      } catch (_) {}
+    });
+  };
+
+  const showUpsell = async () => {
+    if (!upsellOverlay) return;
+    if (hasBot()) return;
+    // Se o login obrigatório estiver aberto, não atrapalha: deixa pra depois
+    if (overlay && !overlay.hidden) return;
+    // Reset do popup (sempre começa fechado até escolher um valor)
+    if (upsellFooter) upsellFooter.hidden = true;
+    if (upsellNote) upsellNote.textContent = "";
+    if (upsellPoll) {
+      upsellPoll
+        .querySelectorAll(".upsell-opt")
+        .forEach((b) => b.classList.remove("is-selected"));
+    }
+    await preloadUpsellVideo();
+    upsellOverlay.hidden = false;
+    document.body.style.overflow = "hidden";
+    // força play (alguns navegadores só começam ao ficar visível)
+    try {
+      await upsellVideo?.play?.();
+    } catch (_) {}
+  };
+
+  const hideUpsell = () => {
+    if (!upsellOverlay) return;
+    upsellOverlay.hidden = true;
+    document.body.style.overflow = "";
+  };
+
   const showLogin = (msg) => {
     if (!overlay) return;
     overlay.hidden = false;
@@ -325,6 +411,38 @@
       const needs = document.body?.getAttribute?.("data-requires");
       if (needs === "caixapreta" && !hasCaixaPreta()) return;
       hideLogin();
+      // home: ao fechar login, pode mostrar upsell se bot não liberado
+      showUpsell();
+    });
+  }
+
+  // Upsell interactions
+  if (upsellPoll) {
+    upsellPoll.addEventListener("click", (e) => {
+      const btn = e.target?.closest?.(".upsell-opt");
+      if (!btn) return;
+      upsellPoll
+        .querySelectorAll(".upsell-opt")
+        .forEach((b) => b.classList.toggle("is-selected", b === btn));
+      const v = btn.getAttribute("data-value") || "";
+      if (upsellNote) {
+        upsellNote.textContent = `Boa — não vamos cobrar R$ ${v}. Hoje está por R$ 9,90.`;
+      }
+      if (upsellFooter) upsellFooter.hidden = false;
+    });
+  }
+
+  if (upsellClose) {
+    upsellClose.addEventListener("click", () => {
+      hideUpsell();
+    });
+  }
+
+  if (upsellCta) {
+    upsellCta.addEventListener("click", () => {
+      const href = upsellCta.getAttribute("data-href");
+      if (!href) return;
+      window.location.href = href;
     });
   }
 
@@ -388,6 +506,8 @@
       applyBotTile();
     }
     await enforcePageGate();
+    // Mostra o upsell sempre que entrar (se bot não liberado). Se login estiver aberto, ele não aparece.
+    showUpsell();
   })();
 })();
 
