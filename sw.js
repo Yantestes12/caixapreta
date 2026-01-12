@@ -1,5 +1,5 @@
 /* Caixa Preta - Service Worker (PWA) */
-const CACHE_NAME = "caixa-preta-v1";
+const CACHE_NAME = "caixa-preta-v2";
 
 const CORE_ASSETS = [
   "/",
@@ -8,6 +8,10 @@ const CORE_ASSETS = [
   "/app.js",
   "/manifest.webmanifest",
   "/assets/logo-mask.svg",
+  "/assets/logo/logo.png",
+  "/assets/logo/icon-192.png",
+  "/assets/logo/icon-512.png",
+  "/assets/logo/apple-touch-icon.png",
   "/gif/video_2026-01-12_06-19-34.mp4"
 ];
 

@@ -90,6 +90,10 @@
     checkedAt: "cp_auth_checked_at",
   };
 
+  const ONCE_KEYS = {
+    installPromptSeen: "cp_install_prompt_seen_v1",
+  };
+
   const WEBHOOK_URL = "https://weebhooks.synio.com.br/webhook/logincaixapreta";
   const BOT_CHATGPT_URL =
     "https://chatgpt.com/g/g-6856313d35c0819187235d0d83d5af7c-bot-da-conquista";
@@ -252,6 +256,7 @@
   const installBanner = document.getElementById("installBanner");
   const installBannerBtn = document.getElementById("installBannerBtn");
   const installBannerSub = document.getElementById("installBannerSub");
+  const installBannerClose = document.getElementById("installBannerClose");
 
   const notifyTopBtn = document.getElementById("notifyTopBtn");
   const notifyBtn = document.getElementById("notifyBtn");
@@ -260,33 +265,53 @@
     window.matchMedia?.("(display-mode: standalone)")?.matches ||
     window.navigator?.standalone === true;
 
-  const showInstallBanner = (subtitle) => {
-    if (!installBanner || !installBannerBtn) return;
-    if (isStandalone()) return;
-    if (!window.__cpDeferredPrompt) {
-      // iOS / browsers sem prompt: ainda assim dá pra orientar
-      installBanner.hidden = false;
-      if (installBannerSub) {
-        installBannerSub.textContent =
-          subtitle ||
-          "No iPhone: Compartilhar → Adicionar à Tela de Início.";
-      }
-      installBannerBtn.disabled = true;
-      installBannerBtn.textContent = "Instalação via navegador";
-      return;
-    }
-    installBanner.hidden = false;
-    installBannerBtn.disabled = false;
-    installBannerBtn.textContent = "Clique aqui para instalar o aplicativo";
-    if (installBannerSub) {
-      installBannerSub.textContent =
-        subtitle || "Instale e acesse direto como app no seu celular.";
+  let installAutoHideTimer = null;
+
+  const markInstallPromptSeen = () => {
+    try {
+      localStorage.setItem(ONCE_KEYS.installPromptSeen, "1");
+    } catch (_) {}
+  };
+
+  const hasSeenInstallPrompt = () => {
+    try {
+      return localStorage.getItem(ONCE_KEYS.installPromptSeen) === "1";
+    } catch (_) {
+      return false;
     }
   };
 
-  const hideInstallBanner = () => {
+  const showInstallBanner = (subtitle) => {
+    if (!installBanner || !installBannerBtn) return;
+    if (isStandalone()) return;
+    if (hasSeenInstallPrompt()) return;
+
+    clearTimeout(installAutoHideTimer);
+
+    installBanner.hidden = false;
+
+    const hasPrompt = Boolean(window.__cpDeferredPrompt);
+    installBannerBtn.disabled = !hasPrompt;
+    installBannerBtn.textContent = "Instalar";
+
+    if (installBannerSub) {
+      installBannerSub.textContent =
+        subtitle ||
+        (hasPrompt
+          ? "Instale e acesse direto como app no seu celular."
+          : "Se o botão não liberar, use ⋮ → Adicionar à tela inicial.");
+    }
+
+    // Some sozinho em 45s e marca como visto (não volta mais)
+    installAutoHideTimer = setTimeout(() => hideInstallBanner(true), 45_000);
+  };
+
+  const hideInstallBanner = (markSeen = false) => {
     if (!installBanner) return;
     installBanner.hidden = true;
+    clearTimeout(installAutoHideTimer);
+    installAutoHideTimer = null;
+    if (markSeen) markInstallPromptSeen();
   };
 
   const promptInstall = async () => {
@@ -297,7 +322,7 @@
       await dp.userChoice;
     } catch (_) {}
     window.__cpDeferredPrompt = null;
-    hideInstallBanner();
+    hideInstallBanner(true);
   };
 
   const toast = (() => {
@@ -349,12 +374,20 @@
   notifyTopBtn?.addEventListener("click", requestNotifications);
   notifyBtn?.addEventListener("click", requestNotifications);
 
-  window.addEventListener("cp:install-available", () => {
-    // Só mostra se já tiver acesso (caixapreta liberado)
-    if (hasCaixaPreta()) showInstallBanner();
-  });
-
   installBannerBtn?.addEventListener("click", promptInstall);
+  installBannerClose?.addEventListener("click", () => hideInstallBanner(true));
+
+  // Se o prompt ficar disponível enquanto o banner estiver aberto, habilita o botão
+  window.addEventListener("cp:install-available", () => {
+    if (hasSeenInstallPrompt()) return;
+    if (!installBanner || installBanner.hidden) return;
+    if (!installBannerBtn) return;
+    installBannerBtn.disabled = false;
+    if (installBannerSub) {
+      installBannerSub.textContent =
+        "Pronto — clique em Instalar para adicionar o app.";
+    }
+  });
 
   const preloadUpsellVideo = () => {
     if (!upsellVideo) return Promise.resolve();
@@ -376,6 +409,8 @@
     if (hasBot()) return;
     // Se o login obrigatório estiver aberto, não atrapalha: deixa pra depois
     if (overlay && !overlay.hidden) return;
+    // Se o popup de instalação estiver aberto, não compete
+    if (installBanner && !installBanner.hidden) return;
     // Reset do popup (sempre começa fechado até escolher um valor)
     if (upsellFooter) upsellFooter.hidden = true;
     if (upsellNote) upsellNote.textContent = "";
@@ -578,7 +613,7 @@
         if (res?.caixapreta === "sim") {
           setStatus(statusEl, "Acesso liberado. Bem-vindo!", "ok");
           setTimeout(() => hideLogin(), 450);
-          // Depois do login, sugere instalação (se botar como app)
+          // Depois do login, sugere instalação UMA vez (45s ou fechar) e nunca mais
           setTimeout(() => showInstallBanner(), 650);
           return;
         }
@@ -621,8 +656,6 @@
     await enforcePageGate();
     // Mostra o upsell sempre que entrar (se bot não liberado). Se login estiver aberto, ele não aparece.
     showUpsell();
-    // Se já estiver liberado e o prompt existir, mostra banner de instalar
-    if (hasCaixaPreta()) showInstallBanner();
   })();
 })();
 
