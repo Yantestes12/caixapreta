@@ -16,7 +16,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Caixa Preta">
 </head>
-<body class="app">
+<body class="app" data-requires="caixapreta">
   <header class="topbar">
     <div class="topbar-inner">
       <button class="icon-btn" type="button" aria-label="Menu">
@@ -47,7 +47,7 @@
             <div class="carousel-image banner-3">
               <div class="maintenance">
                 <div class="maintenance-title">Estamos em manutenção</div>
-                <div class="maintenance-subtitle">O material completo estará disponível dia <strong>14/01</strong>.</div>
+                <div class="maintenance-subtitle">O material completo estará disponível dia <strong>22/01</strong>.</div>
               </div>
             </div>
           </div>
@@ -123,10 +123,7 @@
         <div class="auth-status" id="authStatus" role="status" aria-live="polite"></div>
       </form>
 
-      <div class="auth-actions">
-        <button class="auth-link" id="authLogout" type="button">Trocar e-mail</button>
-        <button class="auth-link" id="authClose" type="button">Fechar</button>
-      </div>
+      <!-- Login obrigatório: sem fechar/trocar e-mail -->
     </div>
   </div>
 

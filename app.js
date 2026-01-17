@@ -242,8 +242,6 @@
   const emailInput = document.getElementById("authEmail");
   const submitBtn = document.getElementById("authSubmit");
   const statusEl = document.getElementById("authStatus");
-  const logoutBtn = document.getElementById("authLogout");
-  const closeBtn = document.getElementById("authClose");
 
   const upsellOverlay = document.getElementById("upsellOverlay");
   const upsellVideo = document.getElementById("upsellVideo");
@@ -451,67 +449,47 @@
     setStatus(statusEl, "", undefined);
   };
 
-  const clearAuth = () => {
-    Object.values(STORAGE_KEYS).forEach((k) => localStorage.removeItem(k));
-  };
-
   const enforcePageGate = async () => {
     const needs = document.body?.getAttribute?.("data-requires");
     const ent = getEntitlements();
 
-    // Páginas protegidas (subpáginas): bloqueia até liberar caixapreta
+    // Login obrigatório: qualquer página com data-requires="caixapreta" só libera com caixapreta: sim
     if (needs === "caixapreta") {
       if (!hasCaixaPreta()) {
-        // Se já tem e-mail salvo, revalida sempre ao entrar (caso tenha comprado depois)
         if (ent.email) {
           showLogin("Verificando acesso...");
-          if (closeBtn) closeBtn.style.display = "none";
           try {
             await refreshEntitlements(ent.email, { silent: false });
-          } catch (_) {
-            // mantém estado atual
-          }
+          } catch (_) {}
           applyBotTile();
         }
       }
       if (!hasCaixaPreta()) {
         showLogin("Digite seu e-mail para liberar o acesso.");
-        if (closeBtn) closeBtn.style.display = "none";
         return;
       }
-      if (closeBtn) closeBtn.style.display = "";
       hideLogin();
       return;
     }
 
-    // Home: mostra login na primeira vez/sem checagem, mas deixa fechar
-    const hasChecked = Boolean(localStorage.getItem(STORAGE_KEYS.checkedAt));
-    if (!hasChecked && !ent.email) {
-      showLogin("Digite seu e-mail para verificar se você está liberado.");
-      if (closeBtn) closeBtn.style.display = "";
-      return;
-    }
-    if (closeBtn) closeBtn.style.display = "";
     hideLogin();
   };
 
-  const go = async (el) => {
+  const go = (el) => {
     const requires = el?.getAttribute?.("data-requires");
     if (requires === "caixapreta" && !hasCaixaPreta()) {
       showLogin("Acesso bloqueado. Digite seu e-mail para verificar.");
       return;
     }
 
-    // Bot: sempre revalida ao tentar abrir, se já tiver e-mail salvo
+    // Bot: não bloquear o clique com await (Safari iOS bloqueia window.open após ações assíncronas).
+    // A revalidação continua acontecendo ao entrar na página; aqui rodamos em background só para atualizar estado futuro.
     if (requires === "bot") {
       const ent = getEntitlements();
       if (ent.email) {
-        try {
-          await refreshEntitlements(ent.email, { silent: true });
-        } catch (_) {
-          // se falhar, segue com o último estado salvo
-        }
-        applyBotTile();
+        refreshEntitlements(ent.email, { silent: true })
+          .then(() => applyBotTile())
+          .catch(() => {});
       }
     }
 
@@ -542,25 +520,6 @@
     e.preventDefault();
     go(el);
   });
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      clearAuth();
-      if (emailInput) emailInput.value = "";
-      applyBotTile();
-      showLogin("Digite seu e-mail para verificar se você está liberado.");
-    });
-  }
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      const needs = document.body?.getAttribute?.("data-requires");
-      if (needs === "caixapreta" && !hasCaixaPreta()) return;
-      hideLogin();
-      // home: ao fechar login, pode mostrar upsell se bot não liberado
-      showUpsell();
-    });
-  }
 
   // Upsell interactions
   if (upsellPoll) {
